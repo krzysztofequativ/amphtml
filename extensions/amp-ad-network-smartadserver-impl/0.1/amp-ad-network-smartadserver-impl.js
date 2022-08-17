@@ -25,6 +25,8 @@ import {Services} from '#service';
 
 import {dev} from '#utils/log';
 
+import safeframeHostApi from './base_host';
+
 import {getOrCreateAdCid} from '../../../src/ad-cid';
 import {getConsentPolicyInfo} from '../../../src/consent';
 import {AmpA4A, XORIGIN_MODE} from '../../amp-a4a/0.1/amp-a4a';
