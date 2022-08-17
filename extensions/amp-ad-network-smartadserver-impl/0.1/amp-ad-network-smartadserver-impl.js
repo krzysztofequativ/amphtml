@@ -16,8 +16,10 @@
 
 import {buildUrl} from '#ads/google/a4a/shared/url-builder';
 
+import {tryResolve} from '#core/data-structures/promise';
 import {getPageLayoutBoxBlocking} from '#core/dom/layout/page-layout-box';
 import {tryParseJson} from '#core/types/object/json';
+import {utf8Decode} from '#core/types/string/bytes';
 
 import {Services} from '#service';
 
@@ -49,6 +51,15 @@ export class AmpAdNetworkSmartadserverImpl extends AmpA4A {
    */
   constructor(element) {
     super(element);
+
+    this.useSafeframe = false;
+    if (
+      'useSafeframe' in this.element.dataset &&
+      this.element.dataset['useSafeframe'] === 'true'
+    ) {
+      this.useSafeframe = true;
+    }
+
     this.addListener();
   }
 
@@ -108,10 +119,33 @@ export class AmpAdNetworkSmartadserverImpl extends AmpA4A {
   }
 
   /** @override */
+  renderViaNameAttrOfXOriginIframe_(creativeBody) {
+    tryResolve(() => utf8Decode(creativeBody)).then((creative) => {
+      new window.$sf.host.Config({
+        renderFile:
+          'https://demo.smartadserver.com/shared/Smart/dodziomek/sf/frame.html',
+      });
+      new window.$sf.host.PosConfig({
+        id: 'ampAdId',
+        w: 120,
+        h: 600,
+        dest: 'ampAdId',
+      });
+      window.$sf.host.render(new window.$sf.host.Position('ampAdId', creative));
+    });
+
+    return super.renderViaNameAttrOfXOriginIframe_(creativeBody);
+  }
+
+  /** @override */
   getNonAmpCreativeRenderingMethod(headerValue) {
-    return Services.platformFor(this.win).isIos()
-      ? XORIGIN_MODE.IFRAME_GET
-      : super.getNonAmpCreativeRenderingMethod(headerValue);
+    if (this.useSafeframe) {
+      return XORIGIN_MODE.SAFEFRAME;
+    } else {
+      return Services.platformFor(this.win).isIos()
+        ? XORIGIN_MODE.IFRAME_GET
+        : super.getNonAmpCreativeRenderingMethod(headerValue);
+    }
   }
 
   /** @override */
@@ -168,7 +202,7 @@ export class AmpAdNetworkSmartadserverImpl extends AmpA4A {
 
   /** @override */
   isXhrAllowed() {
-    return false;
+    return this.useSafeframe ? true : false;
   }
 
   /**
