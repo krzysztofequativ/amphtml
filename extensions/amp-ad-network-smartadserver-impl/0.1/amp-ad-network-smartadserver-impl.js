@@ -25,6 +25,7 @@ import {Services} from '#service';
 
 import {dev} from '#utils/log';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import safeframeHostApi from './base_host';
 
 import {getOrCreateAdCid} from '../../../src/ad-cid';
