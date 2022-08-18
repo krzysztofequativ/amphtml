@@ -124,21 +124,30 @@ export class AmpAdNetworkSmartadserverImpl extends AmpA4A {
   /** @override */
   renderViaNameAttrOfXOriginIframe_(creativeBody) {
     tryResolve(() => utf8Decode(creativeBody)).then((creative) => {
+      const newChildEl = document.createElement('div');
+      newChildEl.id = `ampAdId-${this.sentinel}`;
+      this.element.appendChild(newChildEl);
+
       new window.$sf.host.Config({
         renderFile:
           'https://demo.smartadserver.com/shared/Smart/dodziomek/sf/frame.html',
       });
       new window.$sf.host.PosConfig({
-        id: 'ampAdId',
-        w: 120,
-        h: 600,
-        dest: 'ampAdId',
+        id: newChildEl.id,
+        w: this.getCreativeSize().width,
+        h: this.getCreativeSize().height,
+        dest: newChildEl.id,
       });
-      window.$sf.host.render(new window.$sf.host.Position('ampAdId', creative));
+      window.$sf.host.render(
+        new window.$sf.host.Position(newChildEl.id, creative)
+      );
     });
 
     return super.renderViaNameAttrOfXOriginIframe_(creativeBody);
   }
+
+  /** @override */
+  iframeRenderHelper_() {}
 
   /** @override */
   getNonAmpCreativeRenderingMethod(headerValue) {
