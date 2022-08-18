@@ -130,7 +130,7 @@ export class AmpAdNetworkSmartadserverImpl extends AmpA4A {
 
       new window.$sf.host.Config({
         renderFile:
-          'https://demo.smartadserver.com/shared/Smart/dodziomek/sf/frame.html',
+          'https://ced-ns.sascdn.com/safeframe/safeframe-api/frame.html',
       });
       new window.$sf.host.PosConfig({
         id: newChildEl.id,
