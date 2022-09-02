@@ -25,8 +25,7 @@ import {Services} from '#service';
 
 import {dev} from '#utils/log';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import safeframeHostApi from './base_host';
+import './base_host';
 
 import {getOrCreateAdCid} from '../../../src/ad-cid';
 import {getConsentPolicyInfo} from '../../../src/consent';
@@ -130,7 +129,7 @@ export class AmpAdNetworkSmartadserverImpl extends AmpA4A {
 
       new window.$sf.host.Config({
         renderFile:
-          'https://ced-ns.sascdn.com/safeframe/safeframe-api/frame.html',
+          'https://demo.smartadserver.com/shared/Smart/dodziomek/sf/frame.html',
       });
       new window.$sf.host.PosConfig({
         id: newChildEl.id,
